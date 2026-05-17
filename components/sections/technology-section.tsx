@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-function ScrollRevealText({ text }: { text: string }) {
+export function ScrollRevealText({ text, className = "" }: { text: string; className?: string }) {
   const containerRef = useRef<HTMLParagraphElement>(null);
   const [progress, setProgress] = useState(0);
 
@@ -36,7 +36,7 @@ function ScrollRevealText({ text }: { text: string }) {
   return (
     <p
       ref={containerRef}
-      className="text-3xl font-semibold leading-snug md:text-4xl lg:text-5xl"
+      className={`text-2xl leading-relaxed md:text-3xl lg:text-[2.5rem] lg:leading-snug ${className}`}
     >
       {words.map((word, index) => {
         const wordProgress = index / words.length;
@@ -90,15 +90,24 @@ export function TechnologySection() {
   const textSectionRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [textProgress, setTextProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   
   const descriptionText = "Zbuduj bezkompromisowy wizerunek swojej marki w oczach gości. Personalizowane kostki lodu z wyraźnym logo, serwowane na luksusowych podkładkach z drewna i nubuku, to nie tylko estetyka – to psychologia sprzedaży premium. W świecie luksusowych barów, hoteli i eventów, o powrocie klienta decydują detale, których nie da się podrobić. Przekształcamy surowy mosiądz i szlachetne materiały w narzędzia, które budują Twój prestiż z każdym zaserwowanym koktajlem.";
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    handleResize();
+
     const handleScroll = () => {
       if (!sectionRef.current) return;
       
       const rect = sectionRef.current.getBoundingClientRect();
-      const scrollableHeight = window.innerHeight * 2;
+      const mobile = window.innerWidth < 768;
+      const scrollableHeight = mobile ? window.innerHeight * 0.8 : window.innerHeight * 2;
       const scrolled = -rect.top;
       const progress = Math.max(0, Math.min(1, scrolled / scrollableHeight));
       
@@ -121,28 +130,32 @@ export function TechnologySection() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
     handleScroll();
     
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // Title fades out first (0 to 0.2)
-  const titleOpacity = Math.max(0, 1 - (scrollProgress / 0.2));
+  // Title holds visibility for the first 50% of scroll, then fades out slowly until 95%
+  const titleOpacity = scrollProgress < 0.5 ? 1 : Math.max(0, 1 - ((scrollProgress - 0.5) / 0.45));
   
-  // Image transforms start after title fades (0.2 to 1)
-  const imageProgress = Math.max(0, Math.min(1, (scrollProgress - 0.2) / 0.8));
+  // Image transforms start earlier to overlap with text fade (0.1 to 1)
+  const imageProgress = Math.max(0, Math.min(1, (scrollProgress - 0.1) / 0.9));
   
   // Smooth interpolations
-  const centerWidth = 100 - (imageProgress * 58); // 100% to 42%
+  const borderRadius = imageProgress * 24; // 0px to 24px
+  const gap = imageProgress * 16; // 0px to 16px
+  
+  const centerWidth = isMobile ? 100 - (imageProgress * 100) : 100 - (imageProgress * 58); // Mobile: 100% to 0%. Desktop: 100% to 42%
   const centerHeight = 100 - (imageProgress * 30); // 100% to 70%
-  const sideWidth = imageProgress * 22; // 0% to 22%
+  const centerOpacity = isMobile ? 1 - imageProgress : 1; // Fade out on mobile
+  const sideWidthValue = isMobile ? `calc(${imageProgress * 50}% - ${gap / 2}px)` : `${imageProgress * 22}%`; // Mobile: 50%. Desktop: 22%
   const sideOpacity = imageProgress;
   const sideTranslateLeft = -100 + (imageProgress * 100); // -100% to 0%
   const sideTranslateRight = 100 - (imageProgress * 100); // 100% to 0%
-  const borderRadius = imageProgress * 24; // 0px to 24px
-  const gap = imageProgress * 16; // 0px to 16px
 
   // Calculate grayscale for text section based on textProgress
   const grayscaleAmount = Math.round((1 - textProgress) * 100);
@@ -162,7 +175,7 @@ export function TechnologySection() {
             <div 
               className="flex flex-col will-change-transform"
               style={{
-                width: `${sideWidth}%`,
+                width: sideWidthValue,
                 gap: `${gap}px`,
                 transform: `translateX(${sideTranslateLeft}%)`,
                 opacity: sideOpacity,
@@ -195,6 +208,7 @@ export function TechnologySection() {
                 height: "100%",
                 flex: "0 0 auto",
                 borderRadius: `${borderRadius}px`,
+                opacity: centerOpacity,
               }}
             >
               <Image
@@ -242,7 +256,7 @@ export function TechnologySection() {
             <div 
               className="flex flex-col will-change-transform"
               style={{
-                width: `${sideWidth}%`,
+                width: sideWidthValue,
                 gap: `${gap}px`,
                 transform: `translateX(${sideTranslateRight}%)`,
                 opacity: sideOpacity,
@@ -272,7 +286,7 @@ export function TechnologySection() {
       </div>
 
       {/* Scroll space to enable animation */}
-      <div className="h-[200vh]" />
+      <div className="h-[80vh] md:h-[200vh]" />
 
       {/* Description Section with Background Image and Scroll Reveal */}
       <div 

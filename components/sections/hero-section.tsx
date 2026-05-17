@@ -56,8 +56,8 @@ export function HeroSection() {
     };
   }, []);
 
-  // Text fades out first (0 to 0.2)
-  const textOpacity = Math.max(0, 1 - (scrollProgress / 0.2));
+  // Text fades out quickly (0 to 0.3)
+  const textOpacity = Math.max(0, 1 - (scrollProgress / 0.3));
   
   // Overlay opacity follows text opacity but maxes at 0.5
   const overlayOpacity = textOpacity * 0.5;
