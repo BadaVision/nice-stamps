@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Nice Stamps | Premium Bar Branding",
   description: "Personalizowane stemple do lodu, płyty barmańskie oraz ekskluzywne podkładki. Zbuduj bezkompromisowy wizerunek swojej marki w oczach gości.",
   generator: 'v0.app',
+  verification: {
+    google: 'IY7RQYPMHFO7XH2Ma42hV7GjNk9Pf5Nef7NBGH3XZ9k',
+  },
 }
 
 export default function RootLayout({
@@ -19,9 +22,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="google-site-verification" content="IY7RQYPMHFO7XH2Ma42hV7GjNk9Pf5Nef7NBGH3XZ9k" />
-      </head>
       <body className={`${inter.variable} font-sans antialiased bg-black text-white`}>
         {children}
         <Analytics />
