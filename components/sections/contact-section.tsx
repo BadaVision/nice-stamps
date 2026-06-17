@@ -18,7 +18,7 @@ export function ContactSection() {
     
     // Obfuscate to avoid false positive AV detections
     const WEB3_URL = ["https://api.", "web3forms", ".com/submit"].join("");
-    const KEY = ["1b69612a", "e41e", "4789", "8f63", "9811ad80f0ac"].join("-");
+    const KEY = ["c17640c4", "4e0b", "43b1", "ab7d", "3d506fb10866"].join("-");
 
     const payload = {
       access_key: KEY,
