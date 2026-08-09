@@ -89,14 +89,18 @@ export function FooterSection() {
           {/* Social Links */}
           <div className="flex items-center gap-6">
             <Link
-              href="#"
+              href="https://www.instagram.com/ice.stamps/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-zinc-400 transition-colors hover:text-[#C5A059]"
               aria-label="Instagram"
             >
               <Instagram size={20} />
             </Link>
             <Link
-              href="#"
+              href="https://www.facebook.com/nicestampscom/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-zinc-400 transition-colors hover:text-[#C5A059]"
               aria-label="Facebook"
             >
